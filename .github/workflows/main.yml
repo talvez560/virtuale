@@ -1,4 +1,4 @@
-name: Rodar Windows 11 Lite - LocalToNet Fixo
+name: Rodar Windows 11 Lite - Link Direto
 
 on:
   workflow_dispatch:
@@ -24,17 +24,11 @@ jobs:
             -p 3389:3389 \
             dockurr/windows
 
-      - name: Conectar e Manter o Túnel Ativo
+      - name: Gerar Link de Acesso Visual (Pinggy)
         run: |
-          # Baixa e instala o cliente oficial do LocalToNet
-          curl -L https://github.com -o localtonet.zip
-          unzip -o localtonet.zip
-          chmod +x localtonet
-          
           echo "=================================================="
-          echo "Conectando ao painel do LocalToNet..."
-          echo "Mantenha esta aba do GitHub aberta!"
+          echo "Buscando seu link público de alta estabilidade..."
           echo "=================================================="
           
-          # Executa em primeiro plano (sem o & no final) para o GitHub não matar o processo
-          ./localtonet -token WS49J2A0sHbhFcfV8pTwdPOMUrD1ynvuz -protocol http -port 8006
+          # Cria o túnel reverso usando SSH nativo para a porta 8006 da VM
+          ssh -p 443 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -R 80:localhost:8006 a.pinggy.io
