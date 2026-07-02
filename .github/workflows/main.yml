@@ -1,4 +1,4 @@
-name: Rodar Windows 11 Lite - Sem Token
+name: Rodar Windows 11 Lite com LocalToNet
 
 on:
   workflow_dispatch:
@@ -24,19 +24,23 @@ jobs:
             -p 3389:3389 \
             dockurr/windows
 
-      - name: Gerar Link de Acesso Instantâneo
+      - name: Instalar e Iniciar o LocalToNet
         run: |
-          echo "Criando túnel de acesso seguro..."
-          # Cria o link público usando apenas SSH nativo do Linux, sem exigir contas ou tokens
-          ssh -o StrictHostKeyChecking=no -R 80:localhost:8006 nokey@localhost.run > tunnel.log 2>&1 &
+          # Baixa e extrai o cliente do LocalToNet no Linux do GitHub
+          curl -L https://github.com -o localtonet.zip
+          unzip localtonet.zip
+          chmod +x localtonet
           
+          # SUBISTITUA APENAS O TEXTO INDICADO ABAIXO PELO SEU TOKEN MANTENDO O -token ANTES
+          ./localtonet -token WS49J2A0sHbhFcfV8pTwdPOMUrD1ynvuz -protocol http -port 8006 &
+          
+          echo "=================================================="
+          echo "Conexão estabelecida com sucesso!"
+          echo "👉 Acesse o site do LocalToNet para pegar o seu link."
+          echo "=================================================="
           sleep 5
-          echo "=================================================="
-          echo "👉 SEU LINK DE ACESSO VISUAL AO WINDOWS RECENTE:"
-          grep -oE 'https://[a-zA-Z0-9.-]+\.localhost\.run' tunnel.log || echo "Aguardando link... Execute a etapa novamente se falhar."
-          echo "=================================================="
 
       - name: Manter a VM ativa
         run: |
-          echo "Servidor ativo! Mantenha esta aba aberta."
+          echo "Servidor ativo! Deixe esta aba do GitHub aberta para manter a VM ligada."
           sleep 18000 
