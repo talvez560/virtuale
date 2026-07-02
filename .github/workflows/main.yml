@@ -1,4 +1,4 @@
-name: Rodar Windows 11 Lite
+name: Rodar Windows 11 Lite com Acesso
 
 on:
   workflow_dispatch: # Permite iniciar manualmente na aba Actions
@@ -24,9 +24,28 @@ jobs:
             -p 3389:3389 \
             dockurr/windows
 
+      - name: Instalar e Iniciar o Ngrok (Túnel Visual)
+        run: |
+          # Baixa e instala o ngrok no servidor do GitHub
+          curl -s https://amazonaws.com | sudo tee /etc/apt/trusted.gpg.sh > /dev/null
+          echo "deb https://amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+          sudo apt-get update && sudo apt-get install ngrok -y
+          
+          # COLOQUE SEU TOKEN ABAIXO SUBISTITUINDO A PALAVRA SEU_TOKEN_AQUI
+          ngrok config add-authtoken SEU_TOKEN_AQUI
+          
+          # Cria o link de acesso público e joga o resultado na tela
+          ngrok http 8006 --log=stdout &
+          
+          echo "Aguardando o Ngrok gerar o seu link público..."
+          sleep 5
+          
+          # Extrai o link gerado pelo Ngrok para você clicar
+          curl -s http://127.0.0 | jq -r '.tunnels[0].public_url'
+
       - name: Manter a VM ativa
         run: |
           echo "Janela do Windows 11 iniciada com sucesso!"
           echo "Aguardando conexões..."
-          # Mantém o workflow rodando por 5 horas
+          # Mantém o workflow rodando por 5 horas para você usar
           sleep 18000 
