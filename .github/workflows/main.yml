@@ -1,4 +1,4 @@
-name: Rodar Windows 11 Lite com Acesso
+name: Rodar Windows 11 Lite - Sem Token
 
 on:
   workflow_dispatch:
@@ -24,27 +24,19 @@ jobs:
             -p 3389:3389 \
             dockurr/windows
 
-      - name: Instalar e Iniciar o Ngrok
+      - name: Gerar Link de Acesso Instantâneo
         run: |
-          curl -s https://amazonaws.com | sudo tee /etc/apt/trusted.gpg.sh > /dev/null
-          echo "deb https://amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
-          sudo apt-get update && sudo apt-get install ngrok -y
+          echo "Criando túnel de acesso seguro..."
+          # Cria o link público usando apenas SSH nativo do Linux, sem exigir contas ou tokens
+          ssh -o StrictHostKeyChecking=no -R 80:localhost:8006 nokey@localhost.run > tunnel.log 2>&1 &
           
-          # Cole seu token abaixo no lugar de SEU_TOKEN_AQUI
-          ngrok config add-authtoken SEU_TOKEN_AQUI
-          
-          # Inicia o túnel HTTP na porta 8006
-          ngrok http 8006 --log=stdout &
-          
-          echo "Gerando seu link de acesso visual..."
-          sleep 10
-          
+          sleep 5
           echo "=================================================="
-          echo "👉 CLIQUE NO LINK ABAIXO PARA VER O WINDOWS LIGAR:"
-          curl -s http://127.0.0 | jq -r '.tunnels[0].public_url'
+          echo "👉 SEU LINK DE ACESSO VISUAL AO WINDOWS RECENTE:"
+          grep -oE 'https://[a-zA-Z0-9.-]+\.localhost\.run' tunnel.log || echo "Aguardando link... Execute a etapa novamente se falhar."
           echo "=================================================="
 
       - name: Manter a VM ativa
         run: |
-          echo "Servidor ativo! Deixe esta aba do GitHub aberta para manter a VM ligada."
+          echo "Servidor ativo! Mantenha esta aba aberta."
           sleep 18000 
