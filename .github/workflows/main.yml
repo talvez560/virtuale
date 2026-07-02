@@ -1,0 +1,17 @@
+services:
+  windows:
+    image: dockur/windows
+    container_name: windows11_vm
+    environment:
+      VERSION: "tiny11"      # Usa a versão otimizada e leve do Windows 11
+      RAM_SIZE: "2G"        # Limita a RAM em 2GB para economizar recursos
+      CPU_CORES: "2"        # Usa 2 núcleos de processador
+      DISK_SIZE: "20G"      # Cria um disco virtual de 20GB
+    ports:
+      - 8006:8006           # Porta para acessar a interface visual no navegador
+      - 3389:3389           # Porta opcional para acessar via Área de Trabalho Remota (RDP)
+    volumes:
+      - ./win_data:/storage # Mantém os dados da VM salvos no seu PC
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
