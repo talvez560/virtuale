@@ -1,7 +1,7 @@
 name: Rodar Windows 11 Lite
 
 on:
-  workflow_dispatch: # Permite que você inicie a VM manualmente clicando em um botão no GitHub
+  workflow_dispatch: # Permite iniciar manualmente na aba Actions
 
 jobs:
   rodar-vm:
@@ -15,20 +15,18 @@ jobs:
           docker run -d \
             --name windows11_vm \
             --privileged \
+            --cap-add=NET_ADMIN \
             -e VERSION="tiny11" \
             -e RAM_SIZE="4G" \
             -e CPU_CORES="2" \
             -e DISK_SIZE="20G" \
             -p 8006:8006 \
             -p 3389:3389 \
-            cap_add=NET_ADMIN \
             dockur/windows
 
       - name: Manter a VM ativa
         run: |
           echo "Janela do Windows 11 iniciada com sucesso!"
           echo "Aguardando conexões..."
-          # Mantém o container rodando no servidor do GitHub por até 5 horas
+          # Mantém o workflow rodando por 5 horas
           sleep 18000 
-
-
