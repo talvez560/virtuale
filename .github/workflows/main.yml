@@ -1,4 +1,4 @@
-name: Rodar Windows 11 Lite com LocalToNet
+name: Rodar Windows 11 Lite com Acesso Direct
 
 on:
   workflow_dispatch:
@@ -24,23 +24,23 @@ jobs:
             -p 3389:3389 \
             dockurr/windows
 
-      - name: Instalar e Iniciar o LocalToNet
+      - name: Conectar e Gerar Link na Tela
         run: |
-          # Baixa e extrai o cliente do LocalToNet no Linux do GitHub
-          curl -L https://github.com -o localtonet.zip
-          unzip localtonet.zip
-          chmod +x localtonet
-          
-          # SUBISTITUA APENAS O TEXTO INDICADO ABAIXO PELO SEU TOKEN MANTENDO O -token ANTES
-          ./localtonet -token WS49J2A0sHbhFcfV8pTwdPOMUrD1ynvuz -protocol http -port 8006 &
+          echo "Iniciando conexão reversa..."
+          # Baixa o conector universal que não precisa descompactar
+          curl -s https://pagekite.net -o pagekite.py
+          chmod +x pagekite.py
           
           echo "=================================================="
-          echo "Conexão estabelecida com sucesso!"
-          echo "👉 Acesse o site do LocalToNet para pegar o seu link."
+          echo "👉 COPIE O LINK QUE APARECER LOGO ABAIXO:"
+          # Usa o seu token para criar o endereço público direto nos logs do GitHub
+          python3 pagekite.py 8006 WS49J2A0sHbhFcfV8pTwdPOMUrD1ynvuz.pagekite.me --is_headless &
+          
+          sleep 10
+          echo "Seu link de acesso é: https://WS49J2A0sHbhFcfV8pTwdPOMUrD1ynvuz.pagekite.me"
           echo "=================================================="
-          sleep 5
 
       - name: Manter a VM ativa
         run: |
-          echo "Servidor ativo! Deixe esta aba do GitHub aberta para manter a VM ligada."
+          echo "Servidor ativo! Mantenha esta aba aberta."
           sleep 18000 
