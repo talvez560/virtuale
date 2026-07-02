@@ -1,0 +1,34 @@
+name: Rodar Windows 11 Lite - Link Direto
+
+on:
+  workflow_dispatch:
+
+jobs:
+  rodar-vm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar e Iniciar a VM Windows 11
+        run: |
+          docker run -d \
+            --name windows11_vm \
+            --privileged \
+            --cap-add=NET_ADMIN \
+            -e VERSION="tiny11" \
+            -e RAM_SIZE="4G" \
+            -e CPU_CORES="2" \
+            -e DISK_SIZE="20G" \
+            -p 8006:8006 \
+            -p 3389:3389 \
+            dockurr/windows
+
+      - name: Gerar Link de Acesso Visual (Pinggy)
+        run: |
+          echo "=================================================="
+          echo "Buscando seu link público de alta estabilidade..."
+          echo "=================================================="
+          
+          # Cria o túnel de acesso e mostra o link na tela na hora
+          ssh -p 443 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -R 80:localhost:8006 a.pinggy.io
