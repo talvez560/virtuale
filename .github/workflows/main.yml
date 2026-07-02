@@ -22,7 +22,7 @@ jobs:
             -e DISK_SIZE="20G" \
             -p 8006:8006 \
             -p 3389:3389 \
-            qemuux/windows
+            dockurr/windows
 
       - name: Manter a VM ativa
         run: |
